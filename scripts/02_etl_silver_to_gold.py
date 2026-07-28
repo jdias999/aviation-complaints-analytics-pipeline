@@ -34,6 +34,7 @@ def criar_localidade(df_prata):
     return df_localidade
 
 #nome irônico 
+
 def criar_problemas(df_prata):
     df_problemas = df_prata[['area', 'assunto', 'problema', 'grupo_problema', 'codigo_classificador_anac']].copy()
     df_problemas = df_problemas.drop_duplicates()
@@ -49,17 +50,17 @@ def criar_calendario(df_prata):
 
     todas_as_datas = pd.concat([datas_abertura, datas_finalizacao]).dropna()
 
-    df_calendario = pd.DataFrame({'Data_Completa': todas_as_datas})
-    df_calendario = df_calendario.drop_duplicates().sort_values('Data_Completa').reset_index(drop=True)
+    df_calendario = pd.DataFrame({'data_completa': todas_as_datas})
+    df_calendario = df_calendario.drop_duplicates().sort_values('data_completa').reset_index(drop=True)
 
-    df_calendario['Dia'] = df_calendario['Data_Completa'].dt.day
-    df_calendario['Mes'] = df_calendario['Data_Completa'].dt.month
-    df_calendario['Ano'] = df_calendario['Data_Completa'].dt.year
+    df_calendario['dia'] = df_calendario['data_completa'].dt.day
+    df_calendario['mes'] = df_calendario['data_completa'].dt.month
+    df_calendario['ano'] = df_calendario['data_completa'].dt.year
 
-    df_calendario['ID_Data'] = df_calendario['Data_Completa'].dt.strftime('%Y%m%d').astype(int)
+    df_calendario['ID_data'] = df_calendario['data_completa'].dt.strftime('%Y%m%d').astype(int)
 
-    df_calendario['Data_Completa'] = df_calendario['Data_Completa'].dt.strftime('%Y-%m-%d')
-    df_calendario = df_calendario[['ID_Data', 'Data_Completa', 'Dia', 'Mes', 'Ano']]
+    df_calendario['data_completa'] = df_calendario['data_completa'].dt.strftime('%Y-%m-%d')
+    df_calendario = df_calendario[['ID_data', 'data_completa', 'dia', 'mes', 'ano']]
 
     return df_calendario
 
@@ -144,23 +145,61 @@ def criar_fato_reclamacao(df_prata, df_companhia, df_status_atendimento, df_prob
     return df_fato_final
 
 #lê o arquivo
+
 caminho_parquet = 'data/silver/reclamacoes_limpas.parquet'
 df_prata = pd.read_parquet(caminho_parquet)
 
 #constrói as Dimensões
+
 df_companhia = criar_companhia(df_prata)
 df_status_atendimento = criar_status_atendimento(df_prata)
 df_calendario = criar_calendario(df_prata)
 df_problemas = criar_problemas(df_prata)
 df_localidade = criar_localidade(df_prata)
-
-#constrói a Fato passando a Prata e as Dimensões prontas
 df_fato_reclamacoes = criar_fato_reclamacao(df_prata, df_companhia, df_status_atendimento, df_problemas, df_calendario, df_localidade)
 
-print(df_fato_reclamacoes)
+
+print("Iniciando a validação de dados (Data Quality Checks)...")
+
+#aqui, um pequeno data validation
+
+assert df_companhia['ID_empresa'].is_unique, "ERRO DE INTEGRIDADE: ID_empresa duplicado na dim_companhia."
+assert df_problemas['ID_problemas'].is_unique, "ERRO DE INTEGRIDADE: ID_problemas duplicado na dim_problemas."
+assert df_localidade['ID_localidade'].is_unique, "ERRO DE INTEGRIDADE: ID_localidade duplicado na dim_localidade."
+assert df_status_atendimento['ID_status_atendimento'].is_unique, "ERRO DE INTEGRIDADE: ID_status_atendimento duplicado."
 
 
+colunas_chaves_fato = [
+    'ID_reclamacao', 'ID_empresa', 'ID_status_atendimento', 
+    'ID_localidade', 'ID_problemas', 'FK_data_abertura', 'FK_data_finalizacao'
+]
 
+for col in colunas_chaves_fato:
+    assert df_fato_reclamacoes[col].notnull().all(), \
+        f"ERRO DE NULOS: valores ausentes encontrados na coluna {col} da tabela fato."
+
+print("Validação concluída com sucesso! Os dados estão íntegros.")
+
+
+print("Iniciando a carga no banco DuckDB...")
+
+#aqui, conectei com o arquivo do DW
+
+con_gold = duckdb.connect('data/gold/data_warehouse.duckdb')
+
+#cria as tabelas a partir dos dataframes
+
+con_gold.execute("CREATE TABLE IF NOT EXISTS dim_companhia AS SELECT * FROM df_companhia")
+con_gold.execute("CREATE TABLE IF NOT EXISTS dim_status AS SELECT * FROM df_status_atendimento")
+con_gold.execute("CREATE TABLE IF NOT EXISTS dim_localidade AS SELECT * FROM df_localidade")
+con_gold.execute("CREATE TABLE IF NOT EXISTS dim_problemas AS SELECT * FROM df_problemas")
+con_gold.execute("CREATE TABLE IF NOT EXISTS dim_calendario AS SELECT * FROM df_calendario")
+con_gold.execute("CREATE TABLE IF NOT EXISTS fato_reclamacoes AS SELECT * FROM df_fato_reclamacoes")
+
+#no final, fecha a conexão para salvar as alterações no disco
+con_gold.close()
+
+print("Sucesso! Modelo Star Schema salvo no DuckDB na camada Gold.")
 
 
 
