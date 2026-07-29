@@ -149,7 +149,7 @@ def criar_fato_reclamacao(df_prata, df_companhia, df_status_atendimento, df_prob
 caminho_parquet = 'data/silver/reclamacoes_limpas.parquet'
 df_prata = pd.read_parquet(caminho_parquet)
 
-#constrói as Dimensões
+#constrói as dimensões
 
 df_companhia = criar_companhia(df_prata)
 df_status_atendimento = criar_status_atendimento(df_prata)
@@ -159,7 +159,7 @@ df_localidade = criar_localidade(df_prata)
 df_fato_reclamacoes = criar_fato_reclamacao(df_prata, df_companhia, df_status_atendimento, df_problemas, df_calendario, df_localidade)
 
 
-print("Iniciando a validação de dados (Data Quality Checks)...")
+print("iniciando a validação de dados...")
 
 #aqui, um pequeno data validation
 
@@ -178,16 +178,18 @@ for col in colunas_chaves_fato:
     assert df_fato_reclamacoes[col].notnull().all(), \
         f"ERRO DE NULOS: valores ausentes encontrados na coluna {col} da tabela fato."
 
-print("Validação concluída com sucesso! Os dados estão íntegros.")
+print("validação concluída com sucesso! Os dados estão íntegros.")
 
 
-print("Iniciando a carga no banco DuckDB...")
+print("iniciando a carga no banco DuckDB...")
 
 #aqui, conectei com o arquivo do DW
 
 con_gold = duckdb.connect('data/gold/data_warehouse.duckdb')
 
 #cria as tabelas a partir dos dataframes
+
+
 
 con_gold.execute("CREATE TABLE IF NOT EXISTS dim_companhia AS SELECT * FROM df_companhia")
 con_gold.execute("CREATE TABLE IF NOT EXISTS dim_status AS SELECT * FROM df_status_atendimento")
@@ -199,7 +201,7 @@ con_gold.execute("CREATE TABLE IF NOT EXISTS fato_reclamacoes AS SELECT * FROM d
 #no final, fecha a conexão para salvar as alterações no disco
 con_gold.close()
 
-print("Sucesso! Modelo Star Schema salvo no DuckDB na camada Gold.")
+print("sucesso! modelo star schema salvo no DuckDB na camada gold.")
 
 
 
