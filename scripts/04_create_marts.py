@@ -64,8 +64,8 @@ with duckdb.connect('data/gold/data_warehouse.duckdb') as con:
             dim_calendario AS fc
             ON fr.FK_data_abertura = fc.ID_data
         INNER JOIN
-            dim_problema AS dp
-            ON fr.ID_problema = dp.ID_problema
+            dim_problemas AS dp
+            ON fr.ID_problemas = dp.ID_problemas
         INNER JOIN
             dim_status AS ds
             ON fr.ID_status_atendimento = ds.ID_status_atendimento
@@ -98,8 +98,8 @@ with duckdb.connect('data/gold/data_warehouse.duckdb') as con:
                 dim_calendario AS fc
                 ON fr.FK_data_abertura = fc.ID_data
             INNER JOIN
-                dim_problema AS dp
-                ON fr.ID_problema = dp.ID_problema
+                dim_problemas AS dp
+                ON fr.ID_problemas = dp.ID_problemas
             GROUP BY ALL
                 )
         SELECT
