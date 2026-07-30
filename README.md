@@ -67,14 +67,14 @@ A interface no Power BI foi desenvolvida com foco no **princípio da baixa carga
 * **Análise de Tendência:** Evolução mensal para identificar sazonalidades (como picos nos meses de alta temporada e férias).
 * **Volume por Companhia:** Segmentação executiva para comparar em qual player do setor aéreo concentra-se o maior fluxo operacional.
 
-![Visão Geral](images/pagina_1.png)
+![Visão Geral](images/dash1.png)
 
 ### Página 2: Análise de Causa Raiz & Eficiência de Resposta
 * **Pódio de Atendimento (Top 5):** Filtro `Top N` isolando as maiores dores operacionais da Aviação Civil (como *Cancelamento de voo*, *Dificuldade em canais SAC* e *Extravio de bagagem*).
 * **Matriz de SLA (Formatação Condicional):** Tabela executiva organizada em ordem de relevância, com barras de dados visuais destacando os motivos em que a aviação **mais demora para responder o consumidor** e seu respectivo % de resolução.
 * **Leitura Gerencial:** O tempo médio geral da aviação analisada fica em torno de **~5,47 dias**, com um impressionante patamar de sucesso no primeiro contato superior a **98%**.
 
-![Causa Raiz & Pódio](images/pagina_2.png)
+![Causa Raiz & Pódio](images/dash2.png)
 
 ---
 *Projeto desenvolvido por João Vitor Porphirio Dias.*
