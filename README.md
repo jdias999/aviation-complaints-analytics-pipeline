@@ -1,6 +1,6 @@
 #  End-to-End Data Pipeline & Executive Analytics: Aviação Civil Brasileira (SAC / ANAC)
 
-Análise analítica completa de mais de **100 mil reclamações de passageiros**, abordando todo o ciclo de vida do dado — da ingestão e modelagem de um Data Warehouse local até a camada visual para suporte a decisões de negócio (Business Intelligence).
+Análise analítica completa de mais de **100 mil reclamações de passageiros**, abordando todo o ciclo de vida do dado — da ingestão e modelagem de um Data Warehouse local até a camada visual para suporte a decisões de negócio.
 
 ---
 
