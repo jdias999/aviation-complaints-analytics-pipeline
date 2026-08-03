@@ -1,6 +1,6 @@
 #  End-to-End Data Pipeline & Executive Analytics: Aviação Civil Brasileira (SAC / ANAC)
 
-Análise analítica completa de mais de **100 mil reclamações de passageiros**, abordando todo o ciclo de vida do dado — da ingestão e modelagem de um Data Warehouse local até a camada visual para suporte a decisões de negócio (Business Intelligence).
+Análise analítica completa de mais de **100 mil reclamações de passageiros**, abordando todo o ciclo de vida do dado — da ingestão e modelagem de um Data Warehouse local até a camada visual para suporte a decisões de negócio.
 
 ---
 
@@ -21,7 +21,7 @@ Para garantir integridade, escalabilidade e separação de responsabilidades, o 
 
 1. **Camada Bronze:** Ingestão dos dados históricos e públicos da ANAC mantendo a fidelidade estrutural dos arquivos de origem.
 2. **Camada Silver (Transformation & Cleaning):**
-   * Processamento e estruturação via **Python (Pandas)** para manipulação de DataFrames e tipagem.
+   * Processamento dos dados com Python e Pandas, incluindo padronização de tipos, tratamento de valores ausentes, remoção de duplicidades e preparação das tabelas para análise.
    * Padronização de datas, remoção de duplicidades e tratamento de strings.
    * Criação e modelagem de tabelas utilizando o **DuckDB** como motor OLAP local.
 3. **Camada Gold (Business Marts via SQL):**
@@ -58,7 +58,7 @@ Para garantir integridade, escalabilidade e separação de responsabilidades, o 
 
 ---
 
-##  5. Dashboard Executivo & Insights (Power BI)
+##  4. Dashboard Executivo & Insights (Power BI)
 
 A interface no Power BI foi desenvolvida com foco no **princípio da baixa carga cognitiva**, eliminando ruídos visuais, ajustando contrastes de fundo e usando a formatação condicional como ponto de atenção.
 
